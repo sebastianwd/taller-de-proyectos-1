@@ -1,5 +1,4 @@
 {
-  "name": "web3js-platzi-course",
   "private": true,
   "scripts": {
     "dev": "next dev",
