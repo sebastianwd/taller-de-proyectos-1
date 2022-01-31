@@ -8,14 +8,19 @@ import {
   Stack,
   Avatar,
   useColorModeValue,
+  Select,
+  Button,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
+import { incidentStates } from 'src/constants'
 
 const IncidentScreen = () => {
   const router = useRouter()
 
   const [incident, setIncident] = React.useState<any>({})
+
+  const [incidentState, setIncidentState] = React.useState<any>()
 
   const { id } = router.query
 
@@ -30,6 +35,12 @@ const IncidentScreen = () => {
 
           if (incident) {
             setIncident(incident)
+
+            setIncidentState(
+              Object.keys(incidentStates).find(
+                (incidentState) => incidentState === incident.estado_reporte
+              )
+            )
           }
         }
       })
@@ -39,6 +50,24 @@ const IncidentScreen = () => {
         alert('Hubo un error al cargar el incidente')
       })
   }, [id])
+
+  const onUpdateState = () => {
+    axios
+      .post('http://52.188.201.143/api/v1/update_reporte', {
+        id_reporte: incident.id,
+        estado_reporte: incidentStates[incidentState],
+      })
+      .then((response) => {
+        if (response.data.data) {
+          alert('Registro actualizado correctamente')
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+
+        alert('Hubo un error al actualizar el incidente')
+      })
+  }
 
   return (
     <Flex
@@ -51,6 +80,29 @@ const IncidentScreen = () => {
         Incidencia #{incident.id}
       </Heading>
       <Box w="90%" py={6}>
+        <Box display="flex" alignItems="center">
+          <Select
+            placeholder="Estado"
+            w="20%"
+            value={incidentState}
+            onChange={(e) => {
+              const { value } = e.currentTarget
+
+              setIncidentState(value)
+            }}
+          >
+            {Object.keys(incidentStates).map((incidentState) => {
+              return (
+                <option key={incidentState} value={incidentState}>
+                  {incidentState}
+                </option>
+              )
+            })}
+          </Select>
+          <Button h="1.75rem" size="sm" onClick={onUpdateState}>
+            Guardar
+          </Button>
+        </Box>
         <Box
           w={'full'}
           bg={useColorModeValue('white', 'gray.900')}

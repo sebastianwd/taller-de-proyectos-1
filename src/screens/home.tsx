@@ -48,6 +48,14 @@ const HomeScreen = () => {
         localStorage.setItem('session', JSON.stringify(response.data.data))
 
         router.push('/dashboard')
+
+        return
+      }
+
+      if (response.data.status === 204) {
+        alert('Usuario o contraseña incorrectos')
+
+        return
       }
     } catch {
       alert('Hubo un error al ingresar')
