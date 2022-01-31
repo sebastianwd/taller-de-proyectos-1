@@ -8,5 +8,8 @@ module.exports = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ['images.unsplash.com'],
+  },
   env: {},
 }

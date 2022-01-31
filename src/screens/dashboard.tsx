@@ -8,11 +8,8 @@ import {
   Td,
   Flex,
   Heading,
-  LinkBox,
-  LinkOverlay,
 } from '@chakra-ui/react'
 import axios from 'axios'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 const HomeScreen = () => {
@@ -62,7 +59,11 @@ const HomeScreen = () => {
         <Tbody>
           {incidents.map((incident) => {
             return (
-              <Tr onClick={() => onRowClick(incident.id)} key={incident.id}>
+              <Tr
+                cursor="pointer"
+                onClick={() => onRowClick(incident.id)}
+                key={incident.id}
+              >
                 <Td>{incident.fecha_hora_creacion}</Td>
                 <Td>{incident.tipo_incidencia}</Td>
                 <Td>{incident.descripcion.substring(0, 50) + '...'}</Td>

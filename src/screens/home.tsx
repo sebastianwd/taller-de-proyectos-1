@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 /* eslint-disable react/no-children-prop */
-import { FormEvent, FormEventHandler, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import {
   Flex,
   Heading,
@@ -11,7 +11,6 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  Link,
   Avatar,
   FormControl,
   FormHelperText,
