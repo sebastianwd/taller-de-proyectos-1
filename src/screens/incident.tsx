@@ -21,7 +21,7 @@ const IncidentScreen = () => {
 
   React.useEffect(() => {
     axios
-      .post('https://52.188.201.143/api/v1/get_reportes_all')
+      .post('http://52.188.201.143/api/v1/get_reportes_all')
       .then((response) => {
         if (response.data.data) {
           const incident = response.data.data.find(
