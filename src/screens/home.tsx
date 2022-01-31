@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 /* eslint-disable react/no-children-prop */
-import { useState } from 'react'
+import { FormEvent, FormEventHandler, useState } from 'react'
 import {
   Flex,
   Heading,
@@ -35,7 +35,7 @@ const HomeScreen = () => {
 
   const handleShowClick = () => setShowPassword(!showPassword)
 
-  const login = async (e) => {
+  const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
@@ -44,9 +44,15 @@ const HomeScreen = () => {
         password,
         tipo_usuario: 1,
       })
-    } catch {}
 
-    router.push('/dashboard')
+      if (response.data.data) {
+        localStorage.setItem('session', JSON.stringify(response.data.data))
+
+        router.push('/dashboard')
+      }
+    } catch {
+      alert('Hubo un error al ingresar')
+    }
   }
 
   return (
@@ -63,23 +69,19 @@ const HomeScreen = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar bg="teal.500" />
-        <Heading color="teal.400">Bienvenido</Heading>
+        <Avatar bg="green.500" />
+        <Heading color="green.400">Bienvenido</Heading>
         <Box minW={{ base: '90%', md: '468px' }}>
           <form onSubmit={login}>
-            <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.900"
-              boxShadow="md"
-            >
+            <Stack spacing={4} p="1rem" boxShadow="md">
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    children={<CFaUserAlt color="gray.600" />}
                   />
                   <Input
+                    name="dni_usu"
                     placeholder="Ingrese DNI"
                     onChange={(e) => setUser(e.target.value)}
                   />
@@ -90,11 +92,12 @@ const HomeScreen = () => {
                   <InputLeftElement
                     pointerEvents="none"
                     color="gray.300"
-                    children={<CFaLock color="gray.300" />}
+                    children={<CFaLock color="gray.600" />}
                   />
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Ingrese contraseña"
+                    name="password"
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <InputRightElement width="4.5rem">
@@ -106,10 +109,10 @@ const HomeScreen = () => {
                 <FormHelperText textAlign="right"></FormHelperText>
               </FormControl>
               <Button
-                borderRadius={0}
+                borderRadius={5}
                 type="submit"
                 variant="solid"
-                colorScheme="teal"
+                colorScheme="orange"
                 width="full"
               >
                 Ingresar
