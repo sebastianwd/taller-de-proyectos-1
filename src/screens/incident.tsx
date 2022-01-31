@@ -20,6 +20,8 @@ const IncidentScreen = () => {
 
   const [incident, setIncident] = React.useState<any>({})
 
+  const [images, setImages] = React.useState<any>({})
+
   const [incidentState, setIncidentState] = React.useState<any>()
 
   const { id } = router.query

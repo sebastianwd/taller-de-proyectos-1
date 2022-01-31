@@ -9,6 +9,7 @@ import {
   Flex,
   Heading,
 } from '@chakra-ui/react'
+import { compareDesc } from 'date-fns'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -22,7 +23,7 @@ const HomeScreen = () => {
       .post('http://52.188.201.143/api/v1/get_reportes_all')
       .then((response) => {
         if (response.data.data) {
-          setIncidents(response.data.data)
+          setIncidents(response.data.data.sort((a, b) => compareDesc(a, b)))
         }
       })
       .catch((e) => {
