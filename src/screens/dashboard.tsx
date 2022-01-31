@@ -3,18 +3,22 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   Flex,
   Heading,
+  LinkBox,
+  LinkOverlay,
 } from '@chakra-ui/react'
 import axios from 'axios'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const HomeScreen = () => {
   const [incidents, setIncidents] = React.useState<any[]>([])
+
+  const router = useRouter()
 
   React.useEffect(() => {
     axios
@@ -31,6 +35,10 @@ const HomeScreen = () => {
       })
   }, [])
 
+  const onRowClick = (id: any) => {
+    router.push(`/incidencias/${id}`)
+  }
+
   return (
     <Flex
       flexDirection="column"
@@ -39,23 +47,25 @@ const HomeScreen = () => {
       justifyContent="center"
       alignItems="center"
     >
-      <Heading marginBottom={5} as="h4" size="md">
+      <Heading marginBottom={5} as="h1" size="lg">
         Listado de incidencias
       </Heading>
-      <Table variant="simple">
+      <Table variant="simple" backgroundColor="gray.900">
         <Thead>
           <Tr>
             <Th>fecha</Th>
-            <Th>descripcion</Th>
+            <Th>tipo</Th>
+            <Th>descripción</Th>
             <Th>Estado</Th>
           </Tr>
         </Thead>
         <Tbody>
           {incidents.map((incident) => {
             return (
-              <Tr key={incident.id}>
+              <Tr onClick={() => onRowClick(incident.id)} key={incident.id}>
                 <Td>{incident.fecha_hora_creacion}</Td>
                 <Td>{incident.tipo_incidencia}</Td>
+                <Td>{incident.descripcion.substring(0, 50) + '...'}</Td>
                 <Td>{incident.estado_reporte}</Td>
               </Tr>
             )
