@@ -19,7 +19,7 @@ const HomeScreen = () => {
 
   React.useEffect(() => {
     axios
-      .post('http://52.188.201.143/api/v1/get_reportes_all')
+      .post('https://52.188.201.143/api/v1/get_reportes_all')
       .then((response) => {
         if (response.data.data) {
           setIncidents(response.data.data)

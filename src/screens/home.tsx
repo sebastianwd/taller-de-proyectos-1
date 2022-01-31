@@ -38,7 +38,7 @@ const HomeScreen = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://52.188.201.143/api/v1/login', {
+      const response = await axios.post('https://52.188.201.143/api/v1/login', {
         dni_usu: user,
         password,
         tipo_usuario: 1,
