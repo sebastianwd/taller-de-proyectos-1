@@ -23,7 +23,14 @@ const HomeScreen = () => {
       .post('http://52.188.201.143/api/v1/get_reportes_all')
       .then((response) => {
         if (response.data.data) {
-          setIncidents(response.data.data.sort((a, b) => compareDesc(a, b)))
+          setIncidents(
+            response.data.data.sort((a, b) =>
+              compareDesc(
+                new Date(a.fecha_hora_creacion),
+                new Date(b.fecha_hora_creacion)
+              )
+            )
+          )
         }
       })
       .catch((e) => {
