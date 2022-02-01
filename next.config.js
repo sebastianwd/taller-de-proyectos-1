@@ -9,7 +9,7 @@ module.exports = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', '52.188.201.143'],
   },
   env: {},
 }

@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { incidentStates } from 'src/constants'
+import { map } from 'lodash'
 
 const IncidentScreen = () => {
   const router = useRouter()
@@ -50,6 +51,19 @@ const IncidentScreen = () => {
         console.error(e)
 
         alert('Hubo un error al cargar el incidente')
+      })
+
+    axios
+      .post('http://52.188.201.143/api/v1/get_imagenes_reportes', {
+        fk_reporte: id,
+      })
+      .then((response) => {
+        if (response.data.data) {
+          setImages(response.data.data)
+        }
+      })
+      .catch((e) => {
+        console.error(e)
       })
   }, [id])
 
@@ -113,6 +127,17 @@ const IncidentScreen = () => {
           p={6}
           overflow={'hidden'}
         >
+          <Stack mb={6} direction={'row'} spacing={4} align={'center'}>
+            <Avatar
+              src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+              alt={'Author'}
+            />
+            <Stack direction={'column'} spacing={0} fontSize={'sm'}>
+              <Text fontWeight={400}> Reportado por:</Text>
+              <Text fontWeight={600}>{incident.nombres}</Text>
+              <Text color={'gray.500'}>{incident.fecha_hora_creacion}</Text>
+            </Stack>
+          </Stack>
           <Stack>
             <Heading
               color={useColorModeValue('gray.700', 'white')}
@@ -129,38 +154,20 @@ const IncidentScreen = () => {
               gridAutoFlow="column"
               gridGap={10}
             >
-              <Image
-                src={
-                  'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-                }
-                width="100%"
-                height="20%"
-                layout="responsive"
-                objectFit="contain"
-                alt="prueba"
-              />
-              <Image
-                src={
-                  'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-                }
-                width="100%"
-                height="20%"
-                layout="responsive"
-                objectFit="contain"
-                alt="prueba"
-              />
+              {map(images, (image) => {
+                return (
+                  <Image
+                    key={image.id}
+                    src={`http://52.188.201.143/api/v1/display_image/${image.imagen}`}
+                    width="100%"
+                    height="20%"
+                    layout="responsive"
+                    objectFit="contain"
+                    alt="prueba"
+                  />
+                )
+              })}
             </Box>
-          </Stack>
-          <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
-            <Avatar
-              src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
-              alt={'Author'}
-            />
-            <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-              <Text fontWeight={400}> Reportado por:</Text>
-              <Text fontWeight={600}>{incident.nombres}</Text>
-              <Text color={'gray.500'}>{incident.fecha_hora_creacion}</Text>
-            </Stack>
           </Stack>
         </Box>
       </Box>
