@@ -171,6 +171,9 @@ const IncidentScreen = () => {
             <Stack direction={'column'} spacing={0} fontSize={'sm'}>
               <Text fontWeight={400}> Reportado por:</Text>
               <Text fontWeight={600}>{incident.nombres}</Text>
+              <Text fontWeight={400}>
+                Correo: {user.correo} - DNI: {user.dni_usuario}
+              </Text>
               <Text color={'gray.500'}>{date}</Text>
             </Stack>
             <a
