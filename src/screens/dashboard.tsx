@@ -9,8 +9,10 @@ import {
   Flex,
   Heading,
   Select,
+  Input,
+  Box,
 } from '@chakra-ui/react'
-import { compareDesc } from 'date-fns'
+import { compareDesc, format } from 'date-fns'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { incidentTypes } from 'src/constants'
@@ -20,6 +22,8 @@ const HomeScreen = () => {
   const [incidents, setIncidents] = React.useState<any[]>([])
 
   const initialIncidentsRef = React.useRef<any[]>([])
+
+  const [idFilter, setIdFilter] = React.useState<string>()
 
   const [incidentTypeFilter, setIncidentTypeFilter] = React.useState<string>()
 
@@ -62,6 +66,20 @@ const HomeScreen = () => {
     setIncidents(initialIncidentsRef.current)
   }, [incidentTypeFilter])
 
+  useEffect(() => {
+    if (idFilter) {
+      setIncidents(
+        filter(initialIncidentsRef.current, (incident) =>
+          String(incident.id).includes(idFilter)
+        )
+      )
+
+      return
+    }
+
+    setIncidents(initialIncidentsRef.current)
+  }, [idFilter])
+
   const onRowClick = (id: any) => {
     router.push(`/incidencias/${id}`)
   }
@@ -78,30 +96,37 @@ const HomeScreen = () => {
       <Heading marginBottom={5} as="h1" size="lg">
         Listado de incidencias
       </Heading>
-      <Select
-        placeholder="Tipo"
-        w="20%"
-        mr="auto"
-        value={incidentTypeFilter}
-        onChange={(e) => {
-          const { value } = e.currentTarget
+      <Box w="100%" display="flex">
+        <Select
+          placeholder="Tipo"
+          maxW="20%"
+          mr="5"
+          value={incidentTypeFilter}
+          onChange={(e) => {
+            const { value } = e.currentTarget
 
-          console.log('value', value)
-
-          setIncidentTypeFilter(value)
-        }}
-      >
-        {Object.keys(incidentTypes).map((incidentType) => {
-          return (
-            <option key={incidentType} value={incidentType}>
-              {incidentType}
-            </option>
-          )
-        })}
-      </Select>
+            setIncidentTypeFilter(value)
+          }}
+        >
+          {Object.keys(incidentTypes).map((incidentType) => {
+            return (
+              <option key={incidentType} value={incidentType}>
+                {incidentType}
+              </option>
+            )
+          })}
+        </Select>
+        <Input
+          onChange={(e) => setIdFilter(e.target.value)}
+          w="20%"
+          mr="auto"
+          placeholder="Buscar por id"
+        />
+      </Box>
       <Table variant="simple" backgroundColor="gray.900">
         <Thead>
           <Tr>
+            <Th>#</Th>
             <Th>fecha</Th>
             <Th>tipo</Th>
             <Th>descripción</Th>
@@ -116,7 +141,13 @@ const HomeScreen = () => {
                 onClick={() => onRowClick(incident.id)}
                 key={incident.id}
               >
-                <Td>{incident.fecha_hora_creacion}</Td>
+                <Td>{incident.id}</Td>
+                <Td>
+                  {format(
+                    new Date(incident.fecha_hora_creacion),
+                    'dd/MM/yyyy hh:mmaaa'
+                  )}
+                </Td>
                 <Td>{incident.tipo_incidencia}</Td>
                 <Td>{incident.descripcion.substring(0, 50) + '...'}</Td>
                 <Td>{incident.estado_reporte}</Td>
