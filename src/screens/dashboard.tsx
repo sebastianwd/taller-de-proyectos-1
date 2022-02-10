@@ -126,7 +126,7 @@ const HomeScreen = () => {
       <Table variant="simple" backgroundColor="gray.900">
         <Thead>
           <Tr>
-            <Th>#</Th>
+            <Th>ID</Th>
             <Th>fecha</Th>
             <Th>tipo</Th>
             <Th>descripción</Th>

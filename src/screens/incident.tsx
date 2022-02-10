@@ -10,22 +10,40 @@ import {
   useColorModeValue,
   Select,
   Button,
+  Icon,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { incidentStates } from 'src/constants'
 import { map } from 'lodash'
+import { WhatsappIcon } from 'src/components/icons/whatsapp'
+import { format } from 'date-fns'
+
+interface Options {
+  phone: string
+  message: string
+}
+
+const getWhatsappUrl = ({ phone, message }: Options) => {
+  return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(
+    message
+  )}`
+}
 
 const IncidentScreen = () => {
   const router = useRouter()
 
   const [incident, setIncident] = React.useState<any>({})
 
+  const [user, setUser] = React.useState<any>({})
+
   const [images, setImages] = React.useState<any>({})
 
   const [incidentState, setIncidentState] = React.useState<any>()
 
   const { id } = router.query
+
+  console.log('incident.dni_usuario', incident.dni_usuario)
 
   React.useEffect(() => {
     axios
@@ -44,6 +62,19 @@ const IncidentScreen = () => {
                 (incidentState) => incidentState === incident.estado_reporte
               )
             )
+
+            axios
+              .post('http://52.188.201.143/api/v1/get_user', {
+                dni_usu: incident.dni_usuario,
+              })
+              .then((response) => {
+                if (response.data.data) {
+                  if (incident) {
+                    setUser(response.data.data)
+                  }
+                }
+              })
+              .catch()
           }
         }
       })
@@ -85,6 +116,10 @@ const IncidentScreen = () => {
       })
   }
 
+  const date =
+    incident.fecha_hora_creacion &&
+    format(new Date(incident.fecha_hora_creacion), 'dd/MM/yyyy hh:mmaaa')
+
   return (
     <Flex
       paddingTop={10}
@@ -116,7 +151,7 @@ const IncidentScreen = () => {
             })}
           </Select>
           <Button h="1.75rem" size="sm" onClick={onUpdateState}>
-            Guardar
+            Actualizar estado
           </Button>
         </Box>
         <Box
@@ -129,14 +164,31 @@ const IncidentScreen = () => {
         >
           <Stack mb={6} direction={'row'} spacing={4} align={'center'}>
             <Avatar
-              src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+              src={incident.img_perfil || '/placeholder.jpg'}
               alt={'Author'}
             />
+
             <Stack direction={'column'} spacing={0} fontSize={'sm'}>
               <Text fontWeight={400}> Reportado por:</Text>
               <Text fontWeight={600}>{incident.nombres}</Text>
-              <Text color={'gray.500'}>{incident.fecha_hora_creacion}</Text>
+              <Text color={'gray.500'}>{date}</Text>
             </Stack>
+            <a
+              href={getWhatsappUrl({
+                phone: user.celular,
+                message: `Hola, nos comunicamos por el incidente registrado en la fecha ${date}`,
+              })}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Button
+                leftIcon={<Icon viewBox="0 0 200 200">{<WhatsappIcon />}</Icon>}
+                colorScheme="whatsapp"
+                variant="solid"
+              >
+                {user.celular}
+              </Button>
+            </a>
           </Stack>
           <Stack>
             <Heading
