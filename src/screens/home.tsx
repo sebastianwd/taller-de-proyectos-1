@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 /* eslint-disable react/no-children-prop */
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import {
   Flex,
   Heading,
@@ -19,6 +19,7 @@ import {
 import { FaUserAlt, FaLock } from 'react-icons/fa'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useSession } from 'src/hooks/use-session'
 
 const CFaUserAlt = chakra(FaUserAlt)
 const CFaLock = chakra(FaLock)
@@ -31,6 +32,15 @@ const HomeScreen = () => {
   const router = useRouter()
 
   const [password, setPassword] = useState<string>()
+
+  const [session, setSession] = useSession()
+
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session])
 
   const handleShowClick = () => setShowPassword(!showPassword)
 
@@ -45,7 +55,7 @@ const HomeScreen = () => {
       })
 
       if (response.data.data) {
-        localStorage.setItem('session', JSON.stringify(response.data.data))
+        setSession(JSON.stringify(response.data.data))
 
         router.push('/dashboard')
 

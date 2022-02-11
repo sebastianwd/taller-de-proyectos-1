@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import qs from 'querystring'
 import {
   Box,
   Flex,
@@ -106,6 +107,19 @@ const IncidentScreen = () => {
       })
       .then((response) => {
         if (response.data.data) {
+          axios.post(
+            'https://script.google.com/macros/s/AKfycbxQBqQoDnj-Nu_gt9xP_JIl8GhLBBjnq-vJNbt66iyUghQ8h1u0zi8sF-DJktTqbb-W/exec',
+            qs.stringify({
+              mensaje: `Tu reporte de incidente ha pasado a estado ${incidentState}`,
+              formGoogleSendEmail: 'sebastian.luque.pl@gmail.com',
+            }),
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            }
+          )
+
           alert('Registro actualizado correctamente')
         }
       })
