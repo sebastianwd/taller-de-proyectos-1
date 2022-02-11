@@ -44,8 +44,6 @@ const IncidentScreen = () => {
 
   const { id } = router.query
 
-  console.log('incident.dni_usuario', incident.dni_usuario)
-
   React.useEffect(() => {
     axios
       .post('http://52.188.201.143/api/v1/get_reportes_all')
@@ -111,7 +109,7 @@ const IncidentScreen = () => {
             'https://script.google.com/macros/s/AKfycbxQBqQoDnj-Nu_gt9xP_JIl8GhLBBjnq-vJNbt66iyUghQ8h1u0zi8sF-DJktTqbb-W/exec',
             qs.stringify({
               mensaje: `Tu reporte de incidente ha pasado a estado ${incidentState}`,
-              formGoogleSendEmail: 'sebastian.luque.pl@gmail.com',
+              formGoogleSendEmail: user.correo,
             }),
             {
               headers: {
