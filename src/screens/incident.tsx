@@ -16,9 +16,10 @@ import {
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { incidentStates } from 'src/constants'
-import { map } from 'lodash'
+import { map, size } from 'lodash'
 import { WhatsappIcon } from 'src/components/icons/whatsapp'
 import { format } from 'date-fns'
+import { Marker, StaticGoogleMap } from 'react-static-google-map'
 
 interface Options {
   phone: string
@@ -142,7 +143,7 @@ const IncidentScreen = () => {
       <Heading marginBottom={5} as="h1" size="lg">
         Incidencia #{incident.id}
       </Heading>
-      <Box w="90%" py={6}>
+      <Box w="100%" py={6}>
         <Box display="flex" alignItems="center">
           <Select
             placeholder="Estado"
@@ -205,36 +206,59 @@ const IncidentScreen = () => {
               </Button>
             </a>
           </Stack>
-          <Stack>
+          <Stack spacing={2}>
             <Heading
               color={useColorModeValue('gray.700', 'white')}
-              fontSize={'xl'}
+              fontSize={'lg'}
               fontFamily={'body'}
             >
               {incident.tipo_incidencia}
             </Heading>
             <Text color={'gray.200'}>{incident.descripcion}</Text>
-            <Box
-              paddingTop={10}
-              height="500px"
-              display="grid"
-              gridAutoFlow="column"
-              gridGap={10}
+            <br />
+            <Heading
+              color={useColorModeValue('gray.700', 'white')}
+              fontSize={'md'}
+              fontFamily={'body'}
             >
-              {map(images, (image) => {
-                return (
-                  <Image
-                    key={image.id}
-                    src={`http://52.188.201.143/api/v1/display_image/${image.imagen}`}
-                    width="100%"
-                    height="20%"
-                    layout="responsive"
-                    objectFit="contain"
-                    alt="prueba"
-                  />
-                )
-              })}
-            </Box>
+              Ubicación
+            </Heading>
+            <br />
+            <Image
+              width="600"
+              height="300"
+              layout="fixed"
+              src={`https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-triangle-stroked+f50505(${incident.longitud},${incident.latitud})/${incident.longitud},${incident.latitud},13,0/600x300@2x?access_token=pk.eyJ1IjoieXVhbjIxMzIxIiwiYSI6ImNremtqYW1pbDBpZjgybnFyNGhjNjlhdXYifQ.XJ9YgRS1hZmRZcuP1BVYyA`}
+              alt="Mapbox Map"
+            />
+            <br />
+            {size(images) > 0 && (
+              <>
+                <Heading fontSize={'md'} fontFamily={'body'}>
+                  Fotos
+                </Heading>
+                <Box
+                  height="500px"
+                  display="grid"
+                  gridAutoFlow="column"
+                  gridGap={10}
+                >
+                  {map(images, (image) => {
+                    return (
+                      <Image
+                        key={image.id}
+                        src={`http://52.188.201.143/api/v1/display_image/${image.imagen}`}
+                        width="100%"
+                        height="20%"
+                        layout="responsive"
+                        objectFit="contain"
+                        alt="prueba"
+                      />
+                    )
+                  })}
+                </Box>
+              </>
+            )}
           </Stack>
         </Box>
       </Box>
